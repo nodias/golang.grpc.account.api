@@ -1,0 +1,95 @@
+syntax="proto3";
+package account;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-swagger/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+	info: {
+		title: "golang.grpc.account.api";
+        version: "1.0";
+        contact: {
+            name: "golang.grpc.account.api project";
+            url: "https://github.com/nodias/golang.grpc.account.api project";
+            email: "nodias46@gmail.com";
+        };
+    };
+    schemes: HTTPS;
+    consumes: "application/json";
+    produces: "application/json";
+    responses: {
+        key: "404";
+        value: {
+            description: "Returned when the resource does not exist.";
+            schema: {
+                json_schema: {
+                    type: STRING;
+                }
+            }
+        }
+    }
+};
+
+service AccountService {
+    rpc Create(CreateRequest) returns (CreateResponse){
+        option (google.api.http) ={
+            post: "/account"
+            body:"*"
+        };
+    }
+    rpc Read(ReadRequest) returns (ReadResponse){
+        option (google.api.http) ={
+            get: "/account/{user_id}"
+        };
+    }
+    rpc Update(UpdateRequest) returns (UpdateResponse){
+        option (google.api.http) ={
+            put: "/account/{user_id}"
+            body:"*"
+
+            additional_bindings{
+                patch: "/account/{user_id}"
+                body: "*"
+            }
+        };
+    }
+    rpc Delete(DeleteRequest) returns (DeleteResponse){
+        option (google.api.http) ={
+            delete: "/account/{user_id}"
+        };
+    }
+}
+message User {
+    string user_id = 1;
+    string email = 2;
+    string password =3;
+    google.protobuf.Timestamp create_time = 4;
+    google.protobuf.Timestamp modify_time = 5;
+}
+message CreateRequest {
+    User user = 2;
+}
+message CreateResponse {
+    string user_id =2;
+}
+message ReadRequest {
+    string user_id = 2;
+}
+message ReadResponse {
+    User user = 2;
+}
+message UpdateRequest {
+    string user_id = 1;
+    User user = 2;
+}
+message UpdateResponse {
+    bool success =2;
+}
+message DeleteRequest {
+    string user_id = 2;
+}
+message DeleteResponse {
+    bool success =2;
+}
+
