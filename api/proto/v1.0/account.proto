@@ -1,4 +1,4 @@
-syntax="proto3";
+syntax = "proto3";
 package account;
 
 import "google/protobuf/timestamp.proto";
@@ -28,68 +28,78 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
                 }
             }
         }
-    }
-}
+    };
+};
 
 service AccountService {
-    rpc Create(CreateRequest) returns (CreateResponse){
-        option (google.api.http) ={
-            post: "/account"
+    rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {
+        option (google.api.http) = {
+            post: "/account/users"
             body:"*"
         };
     }
-    rpc Read(ReadRequest) returns (ReadResponse){
-        option (google.api.http) ={
-            get: "/account/{user_id}"
+    rpc ReadUsers (ReadUsersRequest) returns (stream ReadUsersResponse) {
+        option (google.api.http) = {
+            get: "/account/users"
         };
     }
-    rpc Update(UpdateRequest) returns (UpdateResponse){
-        option (google.api.http) ={
-            put: "/account/{user_id}"
+    rpc ReadUser (ReadUserRequest) returns (ReadUserResponse) {
+        option (google.api.http) = {
+            get: "/account/users/{user_id}"
+        };
+    }
+    rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse) {
+        option (google.api.http) = {
+            put: "/account/users/{user_id}"
             body:"*"
 
             additional_bindings{
-                patch: "/account/{user_id}"
+                patch: "/account/users/{user_id}"
                 body: "*"
             }
         };
     }
-    rpc Delete(DeleteRequest) returns (DeleteResponse){
-        option (google.api.http) ={
-            delete: "/account/{user_id}"
+    rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse) {
+        option (google.api.http) = {
+            delete: "/account/users/{user_id}"
         };
     }
 }
 message User {
     string user_id = 1;
     string email = 2;
-    string password =3;
+    string password = 3;
     google.protobuf.Timestamp create_time = 4;
     google.protobuf.Timestamp modify_time = 5;
 }
-message CreateRequest {
-    User user = 2;
+message CreateUserRequest {
+    User user = 1;
 }
-message CreateResponse {
-    string user_id =2;
+message CreateUserResponse {
+    string user_id = 1;
 }
-message ReadRequest {
-    string user_id = 2;
+message ReadUsersRequest {
 }
-message ReadResponse {
-    User user = 2;
+message ReadUsersResponse {
+    User user = 1;
 }
-message UpdateRequest {
+message ReadUserRequest {
+    string user_id = 1;
+}
+message ReadUserResponse {
+    User user = 1;
+}
+message UpdateUserRequest {
     string user_id = 1;
     User user = 2;
 }
-message UpdateResponse {
-    bool success =2;
+message UpdateUserResponse {
+    bool success = 1;
 }
-message DeleteRequest {
-    string user_id = 2;
+message DeleteUserRequest {
+    string user_id = 1;
 }
-message DeleteResponse {
-    bool success =2;
+message DeleteUserResponse {
+    bool success = 1;
 }
 

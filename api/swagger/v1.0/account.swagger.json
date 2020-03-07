@@ -19,14 +19,50 @@
     "application/json"
   ],
   "paths": {
-    "/account": {
+    "/account/users": {
+      "get": {
+        "operationId": "ReadUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.(streaming responses)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "$ref": "#/definitions/accountReadUsersResponse"
+                },
+                "error": {
+                  "$ref": "#/definitions/runtimeStreamError"
+                }
+              },
+              "title": "Stream result of accountReadUsersResponse"
+            }
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {
+              "type": "string",
+              "format": "string"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response",
+            "schema": {
+              "$ref": "#/definitions/runtimeError"
+            }
+          }
+        },
+        "tags": [
+          "AccountService"
+        ]
+      },
       "post": {
-        "operationId": "Create",
+        "operationId": "CreateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/accountCreateResponse"
+              "$ref": "#/definitions/accountCreateUserResponse"
             }
           },
           "404": {
@@ -49,7 +85,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/accountCreateRequest"
+              "$ref": "#/definitions/accountCreateUserRequest"
             }
           }
         ],
@@ -58,14 +94,14 @@
         ]
       }
     },
-    "/account/{user_id}": {
+    "/account/users/{user_id}": {
       "get": {
-        "operationId": "Read",
+        "operationId": "ReadUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/accountReadResponse"
+              "$ref": "#/definitions/accountReadUserResponse"
             }
           },
           "404": {
@@ -95,12 +131,12 @@
         ]
       },
       "delete": {
-        "operationId": "Delete",
+        "operationId": "DeleteUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/accountDeleteResponse"
+              "$ref": "#/definitions/accountDeleteUserResponse"
             }
           },
           "404": {
@@ -130,12 +166,12 @@
         ]
       },
       "put": {
-        "operationId": "Update",
+        "operationId": "UpdateUser",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/accountUpdateResponse"
+              "$ref": "#/definitions/accountUpdateUserResponse"
             }
           },
           "404": {
@@ -164,7 +200,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/accountUpdateRequest"
+              "$ref": "#/definitions/accountUpdateUserRequest"
             }
           }
         ],
@@ -173,12 +209,12 @@
         ]
       },
       "patch": {
-        "operationId": "Update2",
+        "operationId": "UpdateUser2",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/accountUpdateResponse"
+              "$ref": "#/definitions/accountUpdateUserResponse"
             }
           },
           "404": {
@@ -207,7 +243,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/accountUpdateRequest"
+              "$ref": "#/definitions/accountUpdateUserRequest"
             }
           }
         ],
@@ -218,7 +254,7 @@
     }
   },
   "definitions": {
-    "accountCreateRequest": {
+    "accountCreateUserRequest": {
       "type": "object",
       "properties": {
         "user": {
@@ -226,7 +262,7 @@
         }
       }
     },
-    "accountCreateResponse": {
+    "accountCreateUserResponse": {
       "type": "object",
       "properties": {
         "user_id": {
@@ -234,7 +270,7 @@
         }
       }
     },
-    "accountDeleteResponse": {
+    "accountDeleteUserResponse": {
       "type": "object",
       "properties": {
         "success": {
@@ -243,7 +279,7 @@
         }
       }
     },
-    "accountReadResponse": {
+    "accountReadUserResponse": {
       "type": "object",
       "properties": {
         "user": {
@@ -251,7 +287,15 @@
         }
       }
     },
-    "accountUpdateRequest": {
+    "accountReadUsersResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/accountUser"
+        }
+      }
+    },
+    "accountUpdateUserRequest": {
       "type": "object",
       "properties": {
         "user_id": {
@@ -262,7 +306,7 @@
         }
       }
     },
-    "accountUpdateResponse": {
+    "accountUpdateUserResponse": {
       "type": "object",
       "properties": {
         "success": {
@@ -319,6 +363,31 @@
           "format": "int32"
         },
         "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "runtimeStreamError": {
+      "type": "object",
+      "properties": {
+        "grpc_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "http_code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "http_status": {
           "type": "string"
         },
         "details": {
