@@ -2,11 +2,15 @@ package main
 
 import (
 	"github.com/gorilla/mux"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/seongsukang/golang.grpc.account.api/app/interface/rpc/v1.0/protocol"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/status"
 	"net/http"
 	"strings"
 )
@@ -36,6 +40,10 @@ func (as AccountServer) Delete(context.Context, *account.DeleteRequest) (*accoun
 	panic("implement me")
 }
 
+func recoveryHandler(p interface{}) (err error) {
+	return status.Errorf(codes.Unknown, "panic triggered: %v", p)
+}
+
 func main() {
 	serverCert, err := credentials.NewServerTLSFromFile(certFile, KeyFile)
 	if err != nil {
@@ -47,10 +55,18 @@ func main() {
 		panic(err)
 	}
 
+	recOpts := []grpc_recovery.Option{
+		grpc_recovery.WithRecoveryHandler(recoveryHandler),
+	}
+
 	opts := []grpc.ServerOption{}
 	opts = append(opts, grpc.Creds(serverCert))
+	opts = append(opts, grpc_middleware.WithUnaryServerChain(
+		grpc_recovery.UnaryServerInterceptor(recOpts...),
+	))
 
 	grpcServer := grpc.NewServer(opts...)
+
 	account.RegisterAccountServiceServer(grpcServer, new(AccountServer))
 
 	restRouter := runtime.NewServeMux()
