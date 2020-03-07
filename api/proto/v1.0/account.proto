@@ -29,7 +29,7 @@ option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
             }
         }
     }
-};
+}
 
 service AccountService {
     rpc Create(CreateRequest) returns (CreateResponse){

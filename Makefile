@@ -1,22 +1,49 @@
+PROJECT_PATH:=/Users/seongsukang/Documents/develop/workspace/golang-module/TOY-grpc-kafka-simpleChatApp/back-end/golang.grpc.account.api
 GOPATH:=/Users/seongsukang/Documents/develop/workspace/golang-workspace/gopath
 GRPC_ECOSYSTEM:=${GOPATH}/pkg/mod/github.com/grpc-ecosystem/grpc-gateway@v1.13.0
 GRPC_ECOSYSTEM_GATEWAY:=${GRPC_ECOSYSTEM}/protoc-gen-grpc-gateway
 GRPC_ECOSYSTEM_SWAGGER:=${GRPC_ECOSYSTEM}/protoc-gen-swagger
 GRPC_ECOSYSTEM_GATEWAY_PROTOPATH:=${GRPC_ECOSYSTEM}/third_party/googleapis
 GRPC_ECOSYSTEM_SWAGGER_PROTOPATH:=${GRPC_ECOSYSTEM}
+MODULE_STATIK:=${GOPATH}/pkg/mod/github.com/rakyll/statik@v0.1.7
 
-all: module-setup proto-generate
+## This makefile is gRPC, REST transcoding basic setup guide + Running guide of my TOY project
+## by seongsukang(nodias46@gmail.com, github.com/nodias)
+
+all:
+
 
 .PHONY:module-setup
-module-setup:
+module-setup: module-setup-grpc-ecosystem-gateway module-setup-grpc-ecosystem-swagger module-setup-filesystem-statik module-setup-filesystem-statik-init utility-swagger-setup
 	@echo MAKE : module-setup
+	go list -m all
+
+module-setup-grpc-ecosystem-gateway:
 	go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway && \
-    go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger && \
-    go list -m all && \
 	cd ${GRPC_ECOSYSTEM_GATEWAY} && \
- 	go install && \
+ 	go install
+
+module-setup-grpc-ecosystem-swagger:
+	go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger && \
 	cd ${GRPC_ECOSYSTEM_SWAGGER} && \
  	go install
+
+module-setup-filesystem-statik:
+	go get -u github.com/rakyll/statik && \
+	cd ${MODULE_STATIK} && \
+	go install && \
+	go list -m all && \
+
+module-setup-filesystem-statik-init:
+	cp -rp api/swagger swaggerui/apis && \
+	${GOPATH}/bin/statik -src=${PROJECT_PATH}/swaggerui
+
+utility-swagger-setup:
+	@echo MAKE : utility-swagger-setup
+	git clone https://github.com/swagger-api/swagger-ui.git && \
+	mv swagger-ui/dist ./swaggerui && \
+	rm -rf swagger-ui
+	#ls | grep swagger-ui | awk '{print "rm -rf " $0}'|sh -v
 
 .PHONY:proto-generate
 proto-generate:
