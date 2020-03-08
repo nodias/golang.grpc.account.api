@@ -7,11 +7,11 @@ import "protoc-gen-swagger/options/annotations.proto";
 
 option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
 	info: {
-		title: "golang.grpc.account.api";
+		title: "account.api";
         version: "1.0";
         contact: {
-            name: "golang.grpc.account.api project";
-            url: "https://github.com/nodias/golang.grpc.account.api project";
+            name: "account.api project";
+            url: "https://github.com/nodias/account.api project";
             email: "nodias46@gmail.com";
         };
     };
@@ -45,28 +45,28 @@ service AccountService {
     }
     rpc ReadUser (ReadUserRequest) returns (ReadUserResponse) {
         option (google.api.http) = {
-            get: "/account/users/{user_id}"
+            get: "/account/users/{id}"
         };
     }
     rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse) {
         option (google.api.http) = {
-            put: "/account/users/{user_id}"
+            put: "/account/users/{id}"
             body:"*"
 
             additional_bindings{
-                patch: "/account/users/{user_id}"
+                patch: "/account/users/{id}"
                 body: "*"
             }
         };
     }
     rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse) {
         option (google.api.http) = {
-            delete: "/account/users/{user_id}"
+            delete: "/account/users/{id}"
         };
     }
 }
 message User {
-    string user_id = 1;
+    string id = 1;
     string email = 2;
     string password = 3;
     google.protobuf.Timestamp create_time = 4;
@@ -76,7 +76,7 @@ message CreateUserRequest {
     User user = 1;
 }
 message CreateUserResponse {
-    string user_id = 1;
+    string id = 1;
 }
 message ReadUsersRequest {
 }
@@ -84,20 +84,20 @@ message ReadUsersResponse {
     User user = 1;
 }
 message ReadUserRequest {
-    string user_id = 1;
+    string id = 1;
 }
 message ReadUserResponse {
     User user = 1;
 }
 message UpdateUserRequest {
-    string user_id = 1;
+    string id = 1;
     User user = 2;
 }
 message UpdateUserResponse {
     bool success = 1;
 }
 message DeleteUserRequest {
-    string user_id = 1;
+    string id = 1;
 }
 message DeleteUserResponse {
     bool success = 1;

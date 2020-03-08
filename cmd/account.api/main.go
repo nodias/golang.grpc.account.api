@@ -6,9 +6,11 @@ import (
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/nodias/golang.grpc.account.api/app/interface/rpc/v1.0/account"
+	"github.com/nodias/golang.grpc.account.api/app/interface/rpc"
+	"github.com/nodias/golang.grpc.account.api/app/registry"
+	_ "github.com/nodias/golang.grpc.account.api/statik"
 	"github.com/rakyll/statik/fs"
-	"github.com/seongsukang/golang.grpc.account.api/app/interface/rpc/v1.0/protocol"
-	_ "github.com/seongsukang/golang.grpc.account.api/statik"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -31,28 +33,6 @@ const (
 	KeyFile    = "./cert/my_private.key"
 )
 
-type AccountServer struct{}
-
-func (a AccountServer) CreateUser(context.Context, *account.CreateUserRequest) (*account.CreateUserResponse, error) {
-	panic("implement me")
-}
-
-func (a AccountServer) ReadUsers(*account.ReadUsersRequest, account.AccountService_ReadUsersServer) error {
-	panic("implement me")
-}
-
-func (a AccountServer) ReadUser(context.Context, *account.ReadUserRequest) (*account.ReadUserResponse, error) {
-	panic("implement me")
-}
-
-func (a AccountServer) UpdateUser(context.Context, *account.UpdateUserRequest) (*account.UpdateUserResponse, error) {
-	panic("implement me")
-}
-
-func (a AccountServer) DeleteUser(context.Context, *account.DeleteUserRequest) (*account.DeleteUserResponse, error) {
-	panic("implement me")
-}
-
 func recoveryHandler(p interface{}) (err error) {
 	return status.Errorf(codes.Unknown, "panic triggered: %v", p)
 }
@@ -61,6 +41,12 @@ var url = fmt.Sprintf("%s%s", serverHost, serverPort)
 
 func main() {
 	//db, err := InitMongoDB(MongoHost, MongoPort)
+
+	ctn, err := registry.NewContainer()
+	if err != nil {
+		panic(err)
+	}
+
 	serverCert, err := credentials.NewServerTLSFromFile(certFile, KeyFile)
 	if err != nil {
 		panic(err)
@@ -83,7 +69,7 @@ func main() {
 
 	grpcServer := grpc.NewServer(opts...)
 
-	account.RegisterAccountServiceServer(grpcServer, new(AccountServer))
+	rpc.Apply(grpcServer, ctn)
 
 	conn, err := grpc.DialContext(
 		context.Background(),
@@ -116,7 +102,7 @@ func main() {
 	}
 
 	srv := http.Server{
-		Addr: url,
+		Addr:    url,
 		Handler: httpGrpcRouter(grpcServer, mux),
 	}
 

@@ -1,11 +1,11 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "golang.grpc.account.api",
+    "title": "account.api",
     "version": "1.0",
     "contact": {
-      "name": "golang.grpc.account.api project",
-      "url": "https://github.com/nodias/golang.grpc.account.api project",
+      "name": "account.api project",
+      "url": "https://github.com/nodias/account.api project",
       "email": "nodias46@gmail.com"
     }
   },
@@ -94,7 +94,7 @@
         ]
       }
     },
-    "/account/users/{user_id}": {
+    "/account/users/{id}": {
       "get": {
         "operationId": "ReadUser",
         "responses": {
@@ -120,7 +120,7 @@
         },
         "parameters": [
           {
-            "name": "user_id",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -155,7 +155,7 @@
         },
         "parameters": [
           {
-            "name": "user_id",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -190,7 +190,7 @@
         },
         "parameters": [
           {
-            "name": "user_id",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -233,7 +233,7 @@
         },
         "parameters": [
           {
-            "name": "user_id",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -265,7 +265,7 @@
     "accountCreateUserResponse": {
       "type": "object",
       "properties": {
-        "user_id": {
+        "id": {
           "type": "string"
         }
       }
@@ -298,7 +298,7 @@
     "accountUpdateUserRequest": {
       "type": "object",
       "properties": {
-        "user_id": {
+        "id": {
           "type": "string"
         },
         "user": {
@@ -318,7 +318,7 @@
     "accountUser": {
       "type": "object",
       "properties": {
-        "user_id": {
+        "id": {
           "type": "string"
         },
         "email": {

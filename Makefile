@@ -52,8 +52,8 @@ proto-generate:
 	--proto_path=api/proto/v1.0 \
 	--proto_path=${GRPC_ECOSYSTEM_GATEWAY_PROTOPATH} \
 	--proto_path=${GRPC_ECOSYSTEM_SWAGGER_PROTOPATH} \
-	--go_out=plugins=grpc:app/interface/rpc/v1.0/protocol \
-	--grpc-gateway_out=logtostderr=true:app/interface/rpc/v1.0/protocol \
+	--go_out=plugins=grpc:app/interface/rpc/v1.0/account \
+	--grpc-gateway_out=logtostderr=true:app/interface/rpc/v1.0/account \
 	--swagger_out=logtostderr=true:api/swagger/v1.0 \
 	account.proto
 
