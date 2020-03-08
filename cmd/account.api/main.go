@@ -40,6 +40,7 @@ func recoveryHandler(p interface{}) (err error) {
 var url = fmt.Sprintf("%s%s", serverHost, serverPort)
 
 func main() {
+	//TODO add a mongoDB connection
 	//db, err := InitMongoDB(MongoHost, MongoPort)
 
 	ctn, err := registry.NewContainer()
@@ -71,6 +72,7 @@ func main() {
 
 	rpc.Apply(grpcServer, ctn)
 
+	//TODO Refactoring HTTP/REST server
 	conn, err := grpc.DialContext(
 		context.Background(),
 		url,

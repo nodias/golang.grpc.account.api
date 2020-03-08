@@ -7,6 +7,7 @@ import (
 	"github.com/nodias/golang.grpc.account.api/app/domain/service"
 )
 
+//TODO modify and add usecase with mongoDB ORM
 type UserUsecase interface {
 	ListUser() ([]*User, error)
 	RegisterUser(email string) error

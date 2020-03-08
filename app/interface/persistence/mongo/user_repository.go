@@ -6,6 +6,7 @@ import (
 	"github.com/nodias/golang.grpc.account.api/app/domain/model"
 )
 
+//TODO Maybe this package should be delete, because of ORM of mongodb
 type userRepository struct {
 	mu    *sync.Mutex
 	users map[string]*User
